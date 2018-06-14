@@ -1,3 +1,31 @@
-<p>
-  log-in-page works!
-</p>
+<section id="main-login">
+  <div class="login_wrapper">
+    <div class="logo">
+      <a href="#">
+        <img src="/assets/images/logo_on_login_page.png">
+      </a>
+    </div>
+
+    <div id="signin">
+      <form class="form-signin" role="form" ng-form="f" (ngSubmit)="onSignin('f')">
+        <h3 class="login-heading">Log In</h3>
+        <div class="entry-group">
+          <!--     <label class="inputlabel">Please enter your email address</label> -->
+          <div class="input-icon">
+            <input type="text" class="inputform" placeholder="Username" name="userName" [(ngModel)]="userName" >
+          </div>
+          <!--        <label class="inputlabel">Enter your password</label> -->
+          <div class="input-icon">
+            <input type="password" class="inputform" placeholder="Password" name="password" [(ngModel)]="pass">
+          </div>
+          <div class="text-center">
+            <button class="btn_signin" type="submit" (click)="getLogInData(userName , pass)">
+              Login
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
