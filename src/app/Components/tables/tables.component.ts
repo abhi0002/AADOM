@@ -12,13 +12,22 @@ import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 export class TablesComponent implements OnInit {
 
   users: any;
-  allUsers: any;
-  flagEvent: boolean;
+  registrants: any;
 
+  flagEvent: boolean;
+  flagif: boolean;
+  flagelse: boolean;
+  sectionFlag = false;
+
+  allUsers: any;
+  allRegistrants: any;
   // pager object
   pager: any = {};
+  pagerRegistrants: any = {};
   // paged items
   pagedItems: any[];
+  pagedRegistrants: any[];
+
 
   constructor(
     private httpGet: HttpGetService,
@@ -26,11 +35,13 @@ export class TablesComponent implements OnInit {
     public dialog: MatDialog
   ) { }
 
-  openDialog(onid: number , wid: number) {
+  openDialog(msg: string) {
     const dialogRef = this.dialog.open(DialogContentTableComponent, {
+        height: '350px',
+        width: '350px',
         data: {
-        eventId: onid,
-        weblinkId: wid
+        ErrorDetails: msg
+        // weblinkId: wid
       }
     });
     // this.getRegistrantForEvents(id);
@@ -45,18 +56,38 @@ export class TablesComponent implements OnInit {
         this.allUsers = this.users.responseData;
         console.log(this.allUsers);
         this.flagEvent = true;
-        this.setPage(1);
+        this.setPageEvents(1);
+      });
+  }
+  getRegistrantForEvents(eventId) {
+    this.httpGet.getData('http://172.16.0.119:8080/registrant/' + eventId)
+      .subscribe((response) => {
+        this.registrants = response;
+        this.allRegistrants = this.registrants.responseData;
+        console.log(this.allRegistrants);
+        if (this.allRegistrants.length === 0) {
+          this.flagelse  = true;
+        } else {
+          this.flagif = true;
+          this.setPage(1);
+        }
       });
   }
   ngOnInit() {
+    this.flagif = false;
     this.flagEvent = false;
     console.log('out' + this.flagEvent);
     this.getAllData();
   }
-  setPage(page: number) {
+  setPageEvents(page: number) {
     this.pager = this.pagerService.getPager(this.allUsers.length, page);
     console.log(this.allUsers.length);
     this.pagedItems = this.allUsers.slice(this.pager.startIndex, this.pager.endIndex + 1);
+  }
+  setPage(page: number) {
+    this.pagerRegistrants = this.pagerService.getPager(this.allRegistrants.length, page);
+    console.log(this.allRegistrants.length);
+    this.pagedRegistrants = this.allRegistrants.slice(this.pagerRegistrants.startIndex, this.pagerRegistrants.endIndex + 1);
   }
 
 }
@@ -66,47 +97,14 @@ export class TablesComponent implements OnInit {
   templateUrl: 'dialog-content.html',
 })
 export class DialogContentTableComponent {
-  users: any;
-  allUsers: any;
-  flagif: boolean;
-  flagelse: boolean;
-  webLinkId: number;
-  // pager object
-  pager: any = {};
-  // paged items
-  pagedItems: any[];
+  errorMsg: string;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private httpGet: HttpGetService,
-    private pagerService: PagerService
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) { }
-
-  getRegistrantForEvents() {
-    this.httpGet.getData('http://172.16.0.119:8080/registrant/' + this.data.eventId)
-      .subscribe((response) => {
-        this.users = response;
-        this.allUsers = this.users.responseData;
-        console.log(this.allUsers);
-        if (this.allUsers) {
-          this.flagif = true;
-          this.setPage(1);
-        } else {
-          this.flagelse = true;
-        }
-      });
-  }
-  setPage(page: number) {
-    this.pager = this.pagerService.getPager(this.allUsers.length, page);
-    console.log(this.allUsers.length);
-    this.pagedItems = this.allUsers.slice(this.pager.startIndex, this.pager.endIndex + 1);
-  }
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
-    this.webLinkId = this.data.weblinkId;
-    this.flagif = false;
-    this.flagelse = false;
-    this.getRegistrantForEvents();
-  }
+    this.errorMsg = this.data.ErrorDetails;
+    }
 
 }

@@ -16,6 +16,11 @@ export class DashBoardComponent implements OnInit, CanComponentDeactivate {
   public pieChartType = 'pie';
   public pieChartEventData: number[] = [0 , 0];
   public pieChartRegistrantData: number[] = [0 , 0];
+  public successCountEvent = 0;
+  public successCountRegistrants = 0;
+  public failCountEvent = 0;
+  public failCountRegistrants = 0;
+
   // public chartColors: any[] = [
   //   {
   //     backgroundColor: ['#FF7360', '#6FC8CE', '#FAFFF2', '#FFFCC4', '#B9E8E0']
@@ -49,6 +54,8 @@ export class DashBoardComponent implements OnInit, CanComponentDeactivate {
         if (this.eventResults.status === 200) {
           console.log(this.eventResults.responseData);
           const respData = this.eventResults.responseData;
+          this.successCountEvent = respData.successStatus;
+          this.failCountEvent = respData.failedStatus;
           this.pieChartEventData = [respData.successStatus , respData.failedStatus];
         }
       });
@@ -61,6 +68,8 @@ export class DashBoardComponent implements OnInit, CanComponentDeactivate {
         if (this.registrantResults.status === 200) {
           console.log(this.registrantResults.responseData);
           const respData = this.registrantResults.responseData;
+          this.successCountRegistrants = respData.successStatus;
+          this.failCountRegistrants = respData.failedStatus;
           this.pieChartRegistrantData = [respData.successStatus , respData.failedStatus];
         }
       });

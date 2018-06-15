@@ -14,8 +14,10 @@ export class LoginAuthGuardService implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.checkLogin.checkIfLogin()) {
+    if (!this.checkLogin.checkIfLogin()) {
       return true;
+    } else {
+      this.router.navigate(['/dashboard']);
     }
   }
 }

@@ -21,10 +21,11 @@ import { HeaderComponent } from './Components/header/header.component';
 import { AuthGuardService } from './Services/auth-guard.service';
 import { DeactivateRouteService } from './Services/deactivate-route.service';
 import { LoginAuthGuardService } from './Services/login-auth-guard.service';
+import { RegistrantsTableComponent } from './Components/registrants-table/registrants-table.component';
 
 
 const appRoutes: Routes = [
-  { path: 'login', component: LogInPageComponent},
+  { path: 'login', canActivate: [LoginAuthGuardService], component: LogInPageComponent},
   { path: 'dashboard', canActivate: [AuthGuardService],  component: DashBoardComponent},
   { path: 'tables', canActivate: [AuthGuardService],  component: TablesComponent},
   { path: '', redirectTo: 'login', pathMatch: 'full'}
@@ -36,7 +37,8 @@ const appRoutes: Routes = [
     DashBoardComponent,
     TablesComponent,
     DialogContentTableComponent,
-    HeaderComponent
+    HeaderComponent,
+    RegistrantsTableComponent
   ],
   entryComponents: [DialogContentTableComponent],
   imports: [
@@ -49,7 +51,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     ChartsModule,
     MatDialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
 
   ],
   providers: [
